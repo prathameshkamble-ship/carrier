@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Student Details Form</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+</head>
+<body>
+    <div class="form-container">
+        <h2>🎓 Enter Student Details</h2>
+        <form method="post" action="/">
+            <input type="text" name="name" placeholder="Full Name" required />
+            <input type="tel" name="mobile" placeholder="Mobile Number" required />
+            <input type="number" name="marks" placeholder="Marks (%)" min="0" max="100" required />
+            <select name="branch" required>
+                <option value="" disabled selected>Select Branch</option>
+                <option value="cs">Computer Science</option>
+                <option value="it">Information Technology</option>
+                <option value="mech">Mechanical</option>
+                <option value="civil">Civil</option>
+                <option value="ee">Electrical</option>
+                <option value="medical">Medical</option>
+                <option value="general science">General Science</option>
+            </select>
+            <button type="submit">Get College Suggestions</button>
+        </form>
+    </div>
+</body>
+</html>

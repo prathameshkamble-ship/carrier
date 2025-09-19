@@ -1,0 +1,154 @@
+/* General body styles with gradient background and smooth fade-in */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #6a11cb, #2575fc);
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: fadeIn 1.2s ease forwards;
+}
+
+/* Fade in animation */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* Container to center the cards */
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;      /* align content to top when tall */
+    width: 100%;
+    padding: 40px 0;
+    min-height: 100vh;
+    box-sizing: border-box;
+}
+
+/* Slide up animation on load */
+@keyframes slideUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Card styling */
+.card {
+    background: white;
+    padding: 60px 50px;
+    border-radius: 15px;
+    width: 100%;
+    max-width: 600px;             /* responsive max width */
+    max-height: 80vh;             /* card height won't exceed 80% of viewport height */
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    text-align: center;
+    font-weight: bold;
+    font-size: 1.2rem;
+    animation: slideUp 1s ease forwards;
+    margin: 40px auto;
+    overflow-y: auto;             /* enables vertical scroll if content is too long */
+}
+
+/* Headings */
+h2 {
+    margin-bottom: 20px;
+    color: #333;
+    animation: colorPulse 3s ease infinite;
+}
+
+/* Pulsing color animation for headings */
+@keyframes colorPulse {
+    0%, 100% { color: #333; }
+    50% { color: #2575fc; }
+}
+
+/* Input fields and selects with subtle scale animation when focused */
+input, select {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 14px;
+    margin: 12px 0;
+    outline: none;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease;
+}
+
+input:focus, select:focus {
+    border-color: #2575fc;
+    box-shadow: 0 0 8px rgba(37,117,252,0.6);
+    transform: scale(1.02);
+}
+
+/* Buttons with color transition and shadow on hover */
+button {
+    background: #2575fc;
+    color: white;
+    border: none;
+    padding: 12px;
+    width: 100%;
+    font-size: 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-top: 10px;
+    font-weight: bold;
+    transition: background-color 0.4s ease, box-shadow 0.4s ease;
+}
+
+button:hover {
+    background: #6a11cb;
+    box-shadow: 0 8px 20px rgba(106,17,203,0.6);
+}
+
+/* College list, styled with fade-in and spacing */
+.college-list {
+    list-style: none;
+    padding: 0;
+    animation: fadeInList 1.5s ease forwards;
+}
+
+.college-list li {
+    background: #f4f4f4;
+    padding: 10px;
+    margin: 8px 0;
+    border-radius: 6px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+/* Fade in list items */
+@keyframes fadeInList {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* Back button styling */
+.back-button {
+    display: inline-block;
+    margin-top: 15px;
+    text-decoration: none;
+    color: #2575fc;
+    font-weight: bold;
+    transition: color 0.3s ease;
+}
+
+.back-button:hover {
+    color: #6a11cb;
+}
+
+/* ----- Added container and form-container styling for bigger bold containers ----- */
+
+.form-container {
+    background: white;
+    padding: 60px 50px;
+    border-radius: 15px;
+    width: 100%;
+    max-width: 600px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    text-align: center;
+    font-weight: bold;
+    font-size: 1.2rem;
+    margin: 48px auto;
+    animation: slideUp 1s ease forwards;
+    box-sizing: border-box;
+}

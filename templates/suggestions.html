@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>College Suggestions</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <h2>✅ College Suggestions for {{ branch|capitalize }}</h2>
+
+            {% if colleges %}
+            <ul class="college-list">
+                {% for college in colleges %}
+                    <li>{{ college }}</li>
+                {% endfor %}
+            </ul>
+            {% else %}
+            <p>No colleges found for your branch and marks criteria.</p>
+            {% endif %}
+
+            <a href="{{ url_for('student') }}" class="back-button">🔙 Back</a>
+        </div>
+    </div>
+</body>
+</html>
