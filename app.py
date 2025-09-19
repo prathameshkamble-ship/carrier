@@ -3,36 +3,71 @@ import sqlite3
 
 app = Flask(__name__)
 
-# Database setup
-def init_db():
-    conn = sqlite3.connect("database.db")
-    cursor = conn.cursor()
-    cursor.execute("""
-        CREATE TABLE IF NOT EXISTS students (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            name TEXT,
-            mobile TEXT,
-            marks INTEGER,
-            branch TEXT
-        )
-    """)
-    conn.commit()
-    conn.close()
+# Colleges by branch and marks ranges
+COLLEGES_BY_BRANCH_MARKS = {
+    "engineering": {
+        (30, 60): [
+            "Aurangabad College of Engineering",
+            "Deogiri Institute of Engineering & Management Studies",
+            "Marathwada Institute of Technology"
+        ],
+        (60, 90): [
+            "MIT Aurangabad",
+            "P.E.S. College of Engineering",
+            "Government College of Engineering Aurangabad (Mechanical, Civil, Electrical)"
+        ],
+        (90, 101): [  # 101 to include 100
+            "Government College of Engineering Aurangabad (CSE, IT, E&TC)"
+        ]
+    },
+    "medical": {
+        (30, 60): [
+            "Private BAMS / BHMS Colleges, Aurangabad"
+        ],
+        (60, 90): [
+            "MGM Medical College & Hospital, Aurangabad",
+            "Private MBBS Colleges"
+        ],
+        (90, 101): [
+            "Government Medical College, Aurangabad"
+        ]
+    },
+    "management": {
+        (30, 60): [
+            "Deogiri Institute of Management Studies",
+            "Local Private MBA Colleges"
+        ],
+        (60, 90): [
+            "MGM Institute of Management",
+            "Dr. Rafiq Zakaria College of Management"
+        ],
+        (90, 101): [
+            "MGM Institute of Management"
+        ]
+    },
+    "arts": {
+        (30, 60): [
+            "Dr. Babasaheb Ambedkar Marathwada University Affiliated Arts Colleges",
+            "Local Arts & Commerce Colleges"
+        ],
+        (60, 90): [
+            "Deogiri College, Aurangabad",
+            "Rafiq Zakaria College for Arts"
+        ],
+        (90, 101): [
+            "Deogiri College (Merit Seats)",
+            "Maulana Azad College of Arts, Science & Commerce"
+        ]
+    }
+}
 
-ENGINEERING_COLLEGES = [
-    "IIT Bombay", "IIT Delhi", "IIT Madras", "IIT Kharagpur", "IIT Kanpur",
-    "IIT Roorkee", "IIT Guwahati", "IIT Hyderabad", "IIT Gandhinagar", "IIT Ropar",
-    "NIT Trichy", "NIT Warangal", "NIT Surathkal", "NIT Calicut", "NIT Patna",
-    "NIT Rourkela", "NIT Jaipur", "NIT Bhopal", "BITS Pilani", "VIT Vellore",
-    "MIT Manipal", "DTU Delhi", "Thapar Institute", "Shiv Nadar University"
-]
+# Branch mapping from form selection to main category
+branch_mapping = {
+    "cs": "engineering", "it": "engineering", "mech": "engineering",
+    "civil": "engineering", "ee": "engineering", "medical": "medical",
+    "general science": "medical", "mba": "management", "arts": "arts"
+}
 
-MEDICAL_COLLEGES = [
-    "AIIMS New Delhi", "AIIMS Bhopal", "AIIMS Bhubaneswar", "AIIMS Jodhpur",
-    "AIIMS Patna", "AIIMS Raipur", "AIIMS Rishikesh", "Maulana Azad Medical College",
-    "KGMU Lucknow", "Grant Medical College Mumbai", "Madras Medical College Chennai",
-    "Bangalore Medical College", "Lady Hardinge Medical College", "St. John's Medical College"
-]
 
 @app.route("/", methods=["GET", "POST"])
 def student():
@@ -44,10 +79,8 @@ def student():
 
         conn = sqlite3.connect("database.db")
         cursor = conn.cursor()
-        cursor.execute(
-            "INSERT INTO students (name, mobile, marks, branch) VALUES (?, ?, ?, ?)",
-            (name, mobile, marks, branch)
-        )
+        cursor.execute("INSERT INTO students (name, mobile, marks, branch) VALUES (?, ?, ?, ?)",
+                       (name, mobile, marks, branch))
         conn.commit()
         conn.close()
 
@@ -59,22 +92,38 @@ def student():
 @app.route("/suggestions")
 def suggestions():
     marks = int(request.args.get("marks"))
-    branch = request.args.get("branch")
+    branch = request.args.get("branch").lower()
 
-    engineering_branches = ["cs", "it", "mech", "civil", "ee"]
-    medical_branches = ["medical", "general science"]
+    main_branch = branch_mapping.get(branch)
 
-    if branch.lower() in medical_branches:
-        eligible_colleges = [c for c in MEDICAL_COLLEGES if marks >= 50]
-    elif branch.lower() in engineering_branches:
-        eligible_colleges = [c for c in ENGINEERING_COLLEGES if marks >= 60]
-    else:
-        eligible_colleges = []
+    eligible_colleges = []
 
-    return render_template("suggestions.html", branch=branch, colleges=eligible_colleges)
+    if main_branch and marks >= 30:
+        for (low, high), colleges in COLLEGES_BY_BRANCH_MARKS.get(main_branch, {}).items():
+            if low <= marks < high:
+                eligible_colleges = colleges
+                break
+
+    return render_template("suggestions.html",
+                           branch=branch,
+                           colleges=eligible_colleges)
 
 
 if __name__ == "__main__":
-    init_db()
-    print("✅ Database ready. Open http://127.0.0.1:5000/")
+    # Initialize database
+    conn = sqlite3.connect("database.db")
+    cursor = conn.cursor()
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS students(
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT,
+        mobile TEXT,
+        marks INTEGER,
+        branch TEXT
+        )
+    """)
+    conn.commit()
+    conn.close()
+
     app.run(debug=True)
+
